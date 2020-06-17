@@ -16,9 +16,12 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Task } from "../../models/Task.interface";
+import { mapState } from "vuex";
 
-@Component
-export default class TaskList extends Vue {
-  @Prop() private tasks!: Task[];
-}
+@Component({
+  computed: mapState({
+    tasks: (state: any) => state.task.all
+  }),
+})
+export default class TaskList extends Vue {}
 </script>
