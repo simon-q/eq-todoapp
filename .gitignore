@@ -55,9 +55,8 @@ build/
 .vscode/
 
 ### Vue ###
-.DS_Store
-node_modules
-/dist
+vue/node_modules
+vue/dist
 
 # local env files
 .env.local
