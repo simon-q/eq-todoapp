@@ -6,6 +6,21 @@
 	},
 	"item": [
 		{
+			"name": "index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080",
+					"host": [
+						"localhost"
+					],
+					"port": "8080"
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "task list",
 			"request": {
 				"method": "GET",
