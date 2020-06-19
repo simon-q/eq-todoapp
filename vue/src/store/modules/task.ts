@@ -8,8 +8,11 @@ const state = (): TaskStoreState => ({
 })
 
 const actions = {
-  findAll({ commit }: { commit: Commit }) {
-    Api.getTasks().then(tasks => commit('setAll', tasks))
+  findAll(
+    { commit }: { commit: Commit },
+    payload: FindAllActionPayload,
+  ) {
+    Api.getTasks(payload).then(tasks => commit('setAll', tasks))
   }
 }
 
@@ -17,6 +20,11 @@ const mutations = {
   setAll(state: TaskStoreState, tasks: Task[]) {
     state.all = tasks;
   },
+}
+
+export interface FindAllActionPayload {
+  personId?: number;
+  buildingId?: number;
 }
 
 export default {

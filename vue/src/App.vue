@@ -29,4 +29,36 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.row-gutter-condensed > [class*='col-']:first-child {
+    padding-right: 5px;
+}
+
+.row-gutter-condensed > [class*='col-']:last-child {
+    padding-left: 5px;
+}
+
+.row-gutter-condensed > [class*='col-']:not(:first-child):not(:last-child) {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.icon-lg {
+  height: 22px;
+  width: 22px;
+}
+
+.v-align-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.v-align-row > * {
+  margin-right: 5px;
+}
+
+.space-between {
+  justify-content: space-between;
+}
 </style>
