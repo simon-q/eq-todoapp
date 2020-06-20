@@ -13,17 +13,27 @@ class Api {
     });
   }
 
+  private taskToRequestPayload = (task: Partial<Task>): TaskRequestPayload => {
+    return {
+      id: task.id,
+      done: task.done,
+      text: task.text,
+      personId: task.person?.id,
+      buildingId: task.building?.id
+    };
+  }
+
   getTasks(params: { personId?: number | null, buildingId?: number | null } = {}): Promise<Task[]> {
     return this.axiosInstance.get<Task[]>('tasks', { params })
       .then(response => response.data);
   }
 
-  createTask(body: {
-    text: string;
-    personId?: number;
-    buildingId?: number;
-  }): Promise<void> {
-    return this.axiosInstance.post('tasks', body);
+  createTask(task: Partial<Task>): Promise<Task> {
+    return this.axiosInstance.post('tasks', this.taskToRequestPayload(task));
+  }
+
+  updateTask(task: Partial<Task>): Promise<void> {
+    return this.axiosInstance.put('tasks/' + task.id, this.taskToRequestPayload(task));
   }
 
   getPersons(): Promise<Person[]> {
@@ -35,6 +45,14 @@ class Api {
     return this.axiosInstance.get<Building[]>('buildings')
       .then(response => response.data);
   }
+}
+
+export interface TaskRequestPayload {
+  id?: number;
+  text?: string;
+  done?: boolean;
+  personId?: number;
+  buildingId?: number;
 }
 
 const service = new Api();

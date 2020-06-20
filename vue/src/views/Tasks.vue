@@ -2,7 +2,10 @@
   <div class="about container">
     <TaskForm class="pb-3" />
     <TaskFilter />
-    <TaskList v-if="tasks" class="pb-3" />
+    <TaskList v-if="tasks" :done="false" class="pb-1"/>
+    <div v-if="toDoCount > 0" class="pb-3 pl-2 text-left" >{{ toDoCount }} {{ toDoCount === 1 ? 'task' : 'tasks' }} to do</div>
+    <TaskList v-if="tasks" :done="true" class="pb-1"/>
+    <div v-if="doneCount > 0" class="pb-3 pl-2 text-left">{{ doneCount }} {{ doneCount === 1 ? 'task' : 'tasks' }} done</div>
     <img v-if="!tasks || !tasks.length" class="empty-image" alt="empty list" src="../assets/empty.jpg" />
   </div>
 </template>
@@ -23,8 +26,8 @@ import { mapState } from "vuex";
   },
   computed: mapState({
     tasks: (state: any) => state.task.all,
-    persons: (state: any) => state.person.all,
-    buildings: (state: any) => state.building.all
+    toDoCount: (state: any) => state.task.all.filter((task: Task) => !task.done).length,
+    doneCount: (state: any) => state.task.all.filter((task: Task) => task.done).length,
   }),
 })
 export default class Tasks extends Vue {

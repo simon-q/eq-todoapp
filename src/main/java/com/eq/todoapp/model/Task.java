@@ -6,7 +6,9 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "task")
@@ -18,6 +20,10 @@ public class Task {
 
     @Column(nullable = false)
     private String text;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private Boolean done;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
@@ -34,6 +40,11 @@ public class Task {
     @CreationTimestamp
     private Date createdAt;
 
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    private Date updatedAt;
+
     public Long getId() {
         return this.id;
     }
@@ -48,6 +59,14 @@ public class Task {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Boolean getDone() {
+        return this.done;
+    }
+
+    public void setDone(Boolean done) {
+        this.done = done;
     }
 
     public Person getPerson() {
@@ -68,5 +87,13 @@ public class Task {
 
     public Date getCreatedAt() {
         return this.createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return this.createdAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

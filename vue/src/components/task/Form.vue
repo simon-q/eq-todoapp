@@ -81,13 +81,23 @@ export default class TaskForm extends Vue {
   private selectedPersonId: number|null = null;
   private selectedBuildingId: number|null = null;
   private isFormOpen = false;
-  private text = "";
+  private text = '';
 
   onClickAddButton() {
     this.$store.dispatch('task/create', {
       text: this.text,
-      personId: this.selectedPersonId,
-      buildingId: this.selectedBuildingId
+      person: {
+        id: this.selectedPersonId
+      },
+      building: {
+        id: this.selectedBuildingId
+      }
+    })
+    .then(() => {
+      this.text = '';
+      this.selectedPersonId = null;
+      this.selectedBuildingId = null;
+      this.isFormOpen = false;
     });
   }
 

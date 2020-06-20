@@ -12,13 +12,13 @@ VALUES
   ('Dubai Mall');
 
 INSERT INTO task
-  (text, created_at)
+  (text, created_at, updated_at)
 VALUES
-  ('some task', NOW()),
-  ('another task', NOW()),
-  ('boring task', NOW()),
-  ('testing task', NOW()),
-  ('empty task', NOW());
+  ('some task', NOW(), NOW()),
+  ('another task', NOW(), NOW()),
+  ('boring task', NOW(), NOW()),
+  ('testing task asdwasd afsawd asf asd faas daw asf asd wad sf asd wads dsa fd sadwad sadwaf asdwadsad', NOW(), NOW()),
+  ('empty task', NOW(), NOW());
 
 UPDATE task SET
   person_id = (SELECT id FROM person WHERE name = 'Alice'),

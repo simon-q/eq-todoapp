@@ -1,20 +1,37 @@
 <template>
   <ul class="list-group">
     <li
-      v-for="task in tasks"
+      v-for="task in tasks.filter(task => done != null && task.done === done)"
       :key="task.id"
-      class="list-group-item v-align-row text-left"
+      class="list-group-item text-left"
     >
-      {{ task.text }}
-      <span v-if="task.person" class="badge badge-info">
-        <IconPerson />
-        {{ task.person.name }}
-      </span>
-      &nbsp;
-      <span v-if="task.building" class="badge badge-info">
-        <IconBuilding />
-        {{ task.building.name }}
-      </span>
+      <div class="v-align-row">
+
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" :id="'check' + task.id" v-model="task.done" @click="onClickDone(task)">
+          <label class="custom-control-label" :for="'check' + task.id"></label>
+        </div>
+
+        <div class="v-align-row wrap grow">
+          <div>{{ task.text }}</div>
+          <div class="v-align-row">
+            <span v-if="task.person" class="badge badge-info">
+              <IconPerson />
+              {{ task.person.name }}
+            </span>
+            <span v-if="task.building" class="badge badge-info">
+              <IconBuilding />
+              {{ task.building.name }}
+            </span>
+          </div>
+        </div>
+
+        <!-- todo: actions -->
+        <!-- <div class="v-align-row wrap no-grow">
+          <div>a1</div>
+          <div>a2</div>
+        </div> -->
+      </div>
     </li>
   </ul>
 </template>
@@ -30,10 +47,24 @@ import { mapState } from "vuex";
   computed: mapState({
     tasks: (state: any) => state.task.all
   }),
+  props: {
+    done: {
+      type: Boolean,
+      default: null
+    }
+  },
   components: {
     IconBuilding,
     IconPerson,
   }
 })
-export default class TaskList extends Vue {}
+export default class TaskList extends Vue {
+
+  onClickDone(task: Task) {
+    this.$store.dispatch('task/setDone', {
+      id: task.id,
+      done: !task.done,
+    });
+  }
+}
 </script>

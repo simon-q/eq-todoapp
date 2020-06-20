@@ -22,6 +22,19 @@ const actions = {
     Api.createTask(payload)
       .then(() => dispatch('findAll'));
   },
+  setDone(
+    { dispatch, state }: { dispatch: Dispatch, state: TaskStoreState },
+    payload: SetDoneActionPayload,
+  ) {
+    const task = state.all.find(item => item.id === payload.id);
+    if (task) {
+      Api.updateTask({
+        ...task,
+        done: payload.done
+      })
+        .then(() => dispatch('findAll'));
+    }
+  }
 }
 
 const mutations = {
@@ -39,6 +52,11 @@ export interface CreateActionPayload {
   text: string;
   personId?: number;
   buildingId?: number;
+}
+
+export interface SetDoneActionPayload {
+  id: number,
+  done: boolean,
 }
 
 export default {

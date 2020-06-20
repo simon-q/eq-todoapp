@@ -69,4 +69,16 @@
 .pointer {
   cursor: pointer;
 }
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.no-grow {
+  flex-grow: 0;
+}
 </style>
