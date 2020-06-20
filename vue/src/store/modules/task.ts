@@ -1,7 +1,8 @@
 import Api from '../../services/Api';
 import TaskStoreState from './TaskState.interface'
 import { Task } from '../../models/Task.interface';
-import { Commit } from 'vuex';
+import { Commit, Dispatch } from 'vuex';
+import StoreState from '../State.interface';
 
 const state = (): TaskStoreState => ({
   all: []
@@ -9,18 +10,18 @@ const state = (): TaskStoreState => ({
 
 const actions = {
   findAll(
-    { commit }: { commit: Commit },
-    payload: FindAllActionPayload,
+    { commit, rootState }: { commit: Commit, rootState: StoreState },
   ) {
-    Api.getTasks(payload).then(tasks => commit('setAll', tasks))
+    Api.getTasks(rootState.taskFilter)
+      .then(tasks => commit('setAll', tasks));
   },
   create(
-    { commit, state, rootState }: { commit: Commit, state: any, rootState: any },
+    { dispatch }: { dispatch: Dispatch },
     payload: CreateActionPayload,
   ) {
-    Api.createTask(payload);
-    // TODO: reload list with filter applied
-  }
+    Api.createTask(payload)
+      .then(() => dispatch('findAll'));
+  },
 }
 
 const mutations = {

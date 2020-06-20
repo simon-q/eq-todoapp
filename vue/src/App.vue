@@ -65,4 +65,8 @@
 .justify-center {
   justify-content: center;
 }
+
+.pointer {
+  cursor: pointer;
+}
 </style>

@@ -2,29 +2,32 @@
 <div class="collapsed">
 
   <!-- status -->
-  <div class="text-left pb-2 v-align-row space-between" @click="onClickFilterToggle()">
+  <div class="text-left pb-2 v-align-row space-between">
     <div class="v-align-row">
       <IconFilter />
-      <span class="font-weight-bold">
+      <span class="font-weight-bold pointer" @click="onClickFilterToggle()">
         Filters
       </span>
-      <span v-if="!selectedPersonId && !selectedBuildingId">
-        -&nbsp;None
+      <span v-if="!personId && !buildingId" @click="onClickFilterToggle()" class="pointer">
+        None
       </span>
-      <span v-if="selectedPersonId" class="badge badge-info">
+      <span v-if="personId" class="badge badge-info">
         <IconPerson />
         {{ selectedPersonName }}
       </span>
-      <span v-if="selectedBuildingId" class="badge badge-info">
+      <span v-if="buildingId" class="badge badge-info">
         <IconBuilding />
         {{ selectedBuildingName }}
       </span>
-      <span v-if="selectedPersonId || selectedBuildingId" class="text-secondary" @click="onClickClear()">
+      <span v-if="personId || buildingId" class="text-secondary pointer" @click="onClickClear()">
         Clear
       </span>
     </div>
-    <IconChevronUp class="float-right icon-lg" v-if="isFilterOpen" />
-    <IconChevronDown class="float-right icon-lg" v-if="!isFilterOpen" />
+    <button @click="onClickFilterToggle()" type="button" class="btn">
+      <IconChevronUp class="float-right icon-lg pointer" v-if="isFilterOpen" />
+      <IconChevronDown class="float-right icon-lg pointer" v-if="!isFilterOpen" />
+    </button>
+
   </div>
 
   <!-- form -->
@@ -32,8 +35,8 @@
     <div class="row row-gutter-condensed">
       <div class="col-6">
         <div class="form-group text-left">
-          <label for="person" class="v-align-row"><IconPerson /><span>Person</span></label>
-          <select class="form-control" id="person" v-model="selectedPersonId" @change="onChangeFilter()">
+          <label for="person" class="v-align-row pl-2"><IconPerson /><span>Person</span></label>
+          <select class="form-control" id="person" :value="personId" @change="onChangePerson($event)">
             <option :value="null">All</option>
             <option v-for="person in persons" :key="'person'+person.id" v-bind:value="person.id">
               {{ person && person.name }}
@@ -43,8 +46,8 @@
       </div>
       <div class="col-6">
         <div class="form-group text-left">
-          <label for="building" class="v-align-row"><IconBuilding /><span>Building</span></label>
-          <select class="form-control" id="building" v-model="selectedBuildingId" @change="onChangeFilter()">
+          <label for="building" class="v-align-row pl-2"><IconBuilding /><span>Building</span></label>
+          <select class="form-control" id="building" :value="buildingId" @change="onChangeBuilding($event)">
             <option :value="null">All</option>
             <option v-for="building in buildings" :key="'building'+building.id" v-bind:value="building.id">
               {{ building && building.name }}
@@ -68,16 +71,22 @@ import IconPerson from "@/components/icon/Person.vue";
 import IconChevronUp from "@/components/icon/ChevronUp.vue";
 import IconChevronDown from "@/components/icon/ChevronDown.vue";
 import { mapState } from "vuex";
+import StoreState from "../../store/State.interface";
+import TaskFilterStoreState from "../../store/modules/TaskFilterState.interface";
 
 interface TaskFilterInterface extends Vue {
   persons: Person[],
   buildings: Building[],
+  personId: number | null,
+  buildingId: number | null,
 }
 
 @Component({
   computed: mapState({
     persons: (state: any) => state.person.all,
-    buildings: (state: any) => state.building.all
+    buildings: (state: any) => state.building.all,
+    personId: (state: any) => state.taskFilter.personId,
+    buildingId: (state: any) => state.taskFilter.buildingId,
   }),
   components: {
     IconFilter,
@@ -88,8 +97,6 @@ interface TaskFilterInterface extends Vue {
   }
 })
 export default class TaskFilter extends Vue<TaskFilterInterface> {
-  private selectedPersonId: number|null = null;
-  private selectedBuildingId: number|null = null;
   private isFilterOpen = false;
 
   constructor() {
@@ -100,29 +107,44 @@ export default class TaskFilter extends Vue<TaskFilterInterface> {
     this.isFilterOpen = !this.isFilterOpen;
   }
 
-  onChangeFilter() {
-    this.loadTasks();
+  onChangePerson(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.updateStore({
+      personId: value ? parseInt(value, 10) : null,
+    })
+      .then(this.loadTasks);
+  }
+
+  onChangeBuilding(event: Event) {
+    const value = (event.target as HTMLSelectElement).value;
+    this.updateStore({
+      buildingId: value ? parseInt(value, 10) : null,
+    })
+      .then(this.loadTasks);
   }
 
   onClickClear() {
-    this.selectedPersonId = null;
-    this.selectedBuildingId = null;
-    this.loadTasks();
+    this.updateStore({
+      personId: null,
+      buildingId: null,
+    })
+      .then(this.loadTasks);
   }
 
-  loadTasks() {
-    this.$store.dispatch('task/findAll', {
-      personId: this.selectedPersonId,
-      buildingId: this.selectedBuildingId
-    });
+  updateStore(values: Partial<TaskFilterStoreState>): Promise<void> {
+    return this.$store.dispatch('taskFilter/set', values);
+  }
+
+  loadTasks = () => {
+    this.$store.dispatch('task/findAll');
   }
 
   get selectedPersonName(): string {
-    return this.persons?.find((person: Person) => person.id === this.selectedPersonId)?.name || '';
+    return this.persons?.find((person: Person) => person.id === this.personId)?.name || '';
   }
 
   get selectedBuildingName(): string {
-    return this.buildings?.find((building: Building) => building.id === this.selectedBuildingId)?.name || '';
+    return this.buildings?.find((building: Building) => building.id === this.buildingId)?.name || '';
   }
 }
 </script>

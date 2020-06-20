@@ -13,7 +13,7 @@ class Api {
     });
   }
 
-  getTasks(params: { personId?: number, buildingId?: number }): Promise<Task[]> {
+  getTasks(params: { personId?: number | null, buildingId?: number | null } = {}): Promise<Task[]> {
     return this.axiosInstance.get<Task[]>('tasks', { params })
       .then(response => response.data);
   }
