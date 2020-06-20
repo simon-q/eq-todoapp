@@ -1,8 +1,12 @@
 package com.eq.todoapp.model;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "task")
@@ -24,6 +28,11 @@ public class Task {
     @JoinColumn(name = "building_id")
     @JsonIgnoreProperties({ "hibernateLazyInitializer" })
     private Building building;
+
+    @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date createdAt;
 
     public Long getId() {
         return this.id;
@@ -55,5 +64,9 @@ public class Task {
 
     public void setBuilding(Building building) {
         this.building = building;
+    }
+
+    public Date getCreatedAt() {
+        return this.createdAt;
     }
 }

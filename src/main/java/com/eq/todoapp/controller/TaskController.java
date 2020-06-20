@@ -14,6 +14,7 @@ import com.eq.todoapp.repository.PersonRepository;
 import com.eq.todoapp.repository.TaskRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -54,18 +55,18 @@ public class TaskController {
 		}
 
 		if (person.isPresent() && building.isPresent()) {
-			return taskRepository.findByPersonAndBuilding(person.get(), building.get());
+			return taskRepository.findByPersonAndBuilding(person.get(), building.get(), Sort.by(Sort.Direction.DESC, "createdAt"));
 		}
 
 		if (person.isPresent()) {
-			return taskRepository.findByPerson(person.get());
+			return taskRepository.findByPerson(person.get(), Sort.by(Sort.Direction.DESC, "createdAt"));
 		}
 
 		if (building.isPresent()) {
-			return taskRepository.findByBuilding(building.get());
+			return taskRepository.findByBuilding(building.get(), Sort.by(Sort.Direction.DESC, "createdAt"));
 		}
 
-		return taskRepository.findAll();
+		return taskRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
 	}
 
 	@PostMapping("/tasks")
