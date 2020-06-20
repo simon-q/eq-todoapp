@@ -54,11 +54,15 @@
   align-items: center;
 }
 
-.v-align-row > * {
+.v-align-row > *:not(:last-child) {
   margin-right: 5px;
 }
 
 .space-between {
   justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
 }
 </style>

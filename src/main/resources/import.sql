@@ -1,21 +1,38 @@
 INSERT INTO person
-  (id, name)
+  (name)
 VALUES
-  (1, 'Alice'),
-  (2, 'Bob'),
-  (3, 'Joe');
+  ('Alice'),
+  ('Bob'),
+  ('Joe');
 
 INSERT INTO building
-  (id, name)
+  (name)
 VALUES
-  (1, 'Burj Khalifa'),
-  (2, 'Dubai Mall');
+  ('Burj Khalifa'),
+  ('Dubai Mall');
 
 INSERT INTO task
-  (id, text, person_id, building_id)
+  (text)
 VALUES
-  (1, 'some task', 1, 1),
-  (2, 'another task', 1, null),
-  (3, 'boring task', null, 2),
-  (4, 'testing task', 2, null),
-  (5, 'empty task', null, null);
+  ('some task'),
+  ('another task'),
+  ('boring task'),
+  ('testing task'),
+  ('empty task');
+
+UPDATE task SET
+  person_id = (SELECT id FROM person WHERE name = 'Alice'),
+  building_id = (SELECT id FROM building WHERE name = 'Burj Khalifa')
+WHERE text = 'some task';
+
+UPDATE task SET
+  person_id = (SELECT id FROM person WHERE name = 'Alice')
+WHERE text = 'another task';
+
+UPDATE task SET
+  building_id = (SELECT id FROM building WHERE name = 'Dubai Mall')
+WHERE text = 'boring task';
+
+UPDATE task SET
+  person_id = (SELECT id FROM person WHERE name = 'Bob')
+WHERE text = 'testing task';

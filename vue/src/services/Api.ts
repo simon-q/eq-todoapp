@@ -18,6 +18,14 @@ class Api {
       .then(response => response.data);
   }
 
+  createTask(body: {
+    text: string;
+    personId?: number;
+    buildingId?: number;
+  }): Promise<void> {
+    return this.axiosInstance.post('tasks', body);
+  }
+
   getPersons(): Promise<Person[]> {
     return this.axiosInstance.get<Person[]>('persons')
       .then(response => response.data);

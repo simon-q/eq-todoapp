@@ -13,6 +13,13 @@ const actions = {
     payload: FindAllActionPayload,
   ) {
     Api.getTasks(payload).then(tasks => commit('setAll', tasks))
+  },
+  create(
+    { commit, state, rootState }: { commit: Commit, state: any, rootState: any },
+    payload: CreateActionPayload,
+  ) {
+    Api.createTask(payload);
+    // TODO: reload list with filter applied
   }
 }
 
@@ -23,6 +30,12 @@ const mutations = {
 }
 
 export interface FindAllActionPayload {
+  personId?: number;
+  buildingId?: number;
+}
+
+export interface CreateActionPayload {
+  text: string;
   personId?: number;
   buildingId?: number;
 }

@@ -8,13 +8,18 @@ import java.util.Optional;
 import com.eq.todoapp.model.Building;
 import com.eq.todoapp.model.Person;
 import com.eq.todoapp.model.Task;
+import com.eq.todoapp.model.TaskRequestBody;
 import com.eq.todoapp.repository.BuildingRepository;
 import com.eq.todoapp.repository.PersonRepository;
 import com.eq.todoapp.repository.TaskRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -61,5 +66,37 @@ public class TaskController {
 		}
 
 		return taskRepository.findAll();
+	}
+
+	@PostMapping("/tasks")
+	public ResponseEntity<Task> createTask(@RequestBody() TaskRequestBody taskRequestBody) {
+		Optional<Person> person = Optional.empty();
+		Optional<Building> building = Optional.empty();
+
+		if (taskRequestBody.text == null || taskRequestBody.text.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		Task task = new Task();
+		task.setText(taskRequestBody.text);
+
+		if (taskRequestBody.personId != null) {
+			person = personRepository.findById(taskRequestBody.personId);
+		}
+
+		if (taskRequestBody.buildingId != null) {
+			building = buildingRepository.findById(taskRequestBody.buildingId);
+		}
+
+		if (person.isPresent()) {
+			task.setPerson(person.get());
+		}
+
+		if (building.isPresent()) {
+			task.setBuilding(building.get());
+		}
+
+		taskRepository.save(task);
+		return new ResponseEntity<>(task, HttpStatus.CREATED);
 	}
 }

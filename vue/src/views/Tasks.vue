@@ -1,9 +1,8 @@
 <template>
   <div class="about container">
-    <h1>Tasks</h1>
+    <TaskForm class="pb-3" />
     <TaskFilter />
-    <!-- todo: add form (edit) -->
-    <TaskList v-if="tasks" />
+    <TaskList v-if="tasks" class="pb-3" />
     <img v-if="!tasks || !tasks.length" class="empty-image" alt="empty list" src="../assets/empty.jpg" />
   </div>
 </template>
@@ -12,13 +11,15 @@
 import { Component, Vue } from "vue-property-decorator";
 import TaskList from "@/components/task/List.vue";
 import TaskFilter from "@/components/task/Filter.vue";
+import TaskForm from "@/components/task/Form.vue";
 import { Task } from '../models/Task.interface';
 import { mapState } from "vuex";
 
 @Component({
   components: {
     TaskList,
-    TaskFilter
+    TaskFilter,
+    TaskForm
   },
   computed: mapState({
     tasks: (state: any) => state.task.all,
