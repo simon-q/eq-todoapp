@@ -8,7 +8,14 @@
   </button>
   <div v-if="isFormOpen">
     <div class="form-group text-left">
-      <label for="text" class="v-align-row pl-2"><IconTask /><span>New Task</span></label>
+      <button @click="onClickClose()" type="button" class="btn btn-sm float-right close-button">
+        <IconClose class="icon-lg"/>
+      </button>
+      <label for="text" class="v-align-row pl-2">
+        <IconTask />
+        <span v-if="!isEdit">New Task</span>
+        <span v-if="isEdit">Edit Task</span>
+      </label>
       <input v-model="text" type="text" class="form-control" id="task" placeholder="Describe your task ..." required>
     </div>
     <div class="row row-gutter-condensed pb-2">
@@ -37,18 +44,16 @@
     </div>
     <div class="row row-gutter-condensed pb-4">
       <div class="col-6">
+      </div>
+      <div class="col-6">
         <button
-          @click="onClickAddButton"
+          @click="onClickSubmitButton"
           :disabled="!text || !text.trim()"
           type="button"
           class="btn btn-primary btn-block"
         >
-          Add
-        </button>
-      </div>
-      <div class="col-6 text-right">
-        <button  @click="onClickClose()" type="button" class="btn">
-          Close
+          <span v-if="!isEdit">Add</span>
+          <span v-if="isEdit">Save</span>
         </button>
       </div>
     </div>
@@ -63,42 +68,65 @@ import IconBuilding from "@/components/icon/Building.vue";
 import IconPerson from "@/components/icon/Person.vue";
 import IconTask from "@/components/icon/Task.vue";
 import IconPlus from "@/components/icon/Plus.vue";
+import IconClose from "@/components/icon/Close.vue";
 import { mapState } from "vuex";
+import { Person } from '../../models/Person.interface';
+import { Building } from '../../models/Building.interface';
 
 @Component({
   computed: mapState({
     persons: (state: any) => state.person.all,
     buildings: (state: any) => state.building.all
   }),
+  props: {
+    task: {
+      type: Object
+    }
+  },
   components: {
     IconBuilding,
     IconPerson,
     IconTask,
     IconPlus,
+    IconClose,
   }
 })
 export default class TaskForm extends Vue {
   private selectedPersonId: number|null = null;
   private selectedBuildingId: number|null = null;
   private isFormOpen = false;
+  private isEdit = false;
   private text = '';
 
-  onClickAddButton() {
-    this.$store.dispatch('task/create', {
+  onClickSubmitButton() {
+    let action: string;
+    let task: Partial<Task> = {
       text: this.text,
       person: {
         id: this.selectedPersonId
-      },
+      } as Person,
       building: {
         id: this.selectedBuildingId
-      }
-    })
-    .then(() => {
-      this.text = '';
-      this.selectedPersonId = null;
-      this.selectedBuildingId = null;
-      this.isFormOpen = false;
-    });
+      } as Building
+    };
+
+    if (this.isEdit) {
+      action = 'task/update';
+      task = {
+        ...this.$props.task,
+        ...task
+      };
+    } else {
+      action = 'task/create';
+    }
+
+    this.$store.dispatch(action, task)
+      .then(() => {
+        this.text = '';
+        this.selectedPersonId = null;
+        this.selectedBuildingId = null;
+        this.close();
+      });
   }
 
   onClickOpenButton() {
@@ -106,7 +134,29 @@ export default class TaskForm extends Vue {
   }
 
   onClickClose() {
+    this.close();
+  }
+
+  private close() {
     this.isFormOpen = false;
+    this.$emit('close');
+  }
+
+  created() {
+    const { $props: { task } } = this;
+    if (task) {
+      this.isFormOpen = true;
+      this.isEdit = true;
+      this.text = task.text;
+      this.selectedPersonId = task.person?.id || null;
+      this.selectedBuildingId = task.building?.id || null;
+    }
   }
 }
 </script>
+
+<style scoped>
+.close-button {
+  margin-top: -6px;
+}
+</style>

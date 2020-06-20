@@ -11,13 +11,17 @@
       <span v-if="!personId && !buildingId" @click="onClickFilterToggle()" class="pointer">
         None
       </span>
-      <span v-if="personId" class="badge badge-info">
-        <IconPerson />
-        {{ selectedPersonName }}
+      <span v-if="personId" class="badge task-badge badge-light border border-primary text-primary">
+        <div class="v-align-row">
+          <IconPerson />
+          <span>{{ selectedPersonName }}</span>
+        </div>
       </span>
-      <span v-if="buildingId" class="badge badge-info">
-        <IconBuilding />
-        {{ selectedBuildingName }}
+      <span v-if="buildingId" class="badge task-badge badge-light border border-primary text-primary">
+        <div class="v-align-row">
+          <IconBuilding />
+          <span>{{ selectedBuildingName }}</span>
+        </div>
       </span>
       <span v-if="personId || buildingId" class="text-secondary pointer" @click="onClickClear()">
         Clear

@@ -81,4 +81,9 @@
 .no-grow {
   flex-grow: 0;
 }
+
+.badge.task-badge {
+  font-size: 77%;
+}
+
 </style>

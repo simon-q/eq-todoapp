@@ -22,6 +22,13 @@ const actions = {
     Api.createTask(payload)
       .then(() => dispatch('findAll'));
   },
+  update(
+    { dispatch }: { dispatch: Dispatch },
+    task: Task,
+  ) {
+    Api.updateTask(task)
+      .then(() => dispatch('findAll'));
+  },
   setDone(
     { dispatch, state }: { dispatch: Dispatch, state: TaskStoreState },
     payload: SetDoneActionPayload,
