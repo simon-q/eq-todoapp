@@ -26,11 +26,12 @@
           </div>
         </div>
 
-        <!-- todo: actions -->
-        <!-- <div class="v-align-row wrap no-grow">
-          <div>a1</div>
-          <div>a2</div>
-        </div> -->
+        <div class="v-align-row wrap no-grow">
+          <!-- <div @click="edit(task)">a1</div> -->
+          <div @click="onClickDelete(task.id)">
+            <IconDelete />
+          </div>
+        </div>
       </div>
     </li>
   </ul>
@@ -41,6 +42,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Task } from "../../models/Task.interface";
 import IconBuilding from "@/components/icon/Building.vue";
 import IconPerson from "@/components/icon/Person.vue";
+import IconDelete from "@/components/icon/Delete.vue";
 import { mapState } from "vuex";
 
 @Component({
@@ -56,6 +58,7 @@ import { mapState } from "vuex";
   components: {
     IconBuilding,
     IconPerson,
+    IconDelete,
   }
 })
 export default class TaskList extends Vue {
@@ -65,6 +68,10 @@ export default class TaskList extends Vue {
       id: task.id,
       done: !task.done,
     });
+  }
+
+  onClickDelete(id: number) {
+    this.$store.dispatch('task/delete', id);
   }
 }
 </script>

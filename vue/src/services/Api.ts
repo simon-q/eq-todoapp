@@ -36,6 +36,10 @@ class Api {
     return this.axiosInstance.put('tasks/' + task.id, this.taskToRequestPayload(task));
   }
 
+  deleteTask(id: number): Promise<void> {
+    return this.axiosInstance.delete('tasks/' + id);
+  }
+
   getPersons(): Promise<Person[]> {
     return this.axiosInstance.get<Person[]>('persons')
       .then(response => response.data);

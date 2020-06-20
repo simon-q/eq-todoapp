@@ -34,6 +34,13 @@ const actions = {
       })
         .then(() => dispatch('findAll'));
     }
+  },
+  delete(
+    { dispatch }: { dispatch: Dispatch },
+    id: number,
+  ) {
+    Api.deleteTask(id)
+      .then(() => dispatch('findAll'));
   }
 }
 

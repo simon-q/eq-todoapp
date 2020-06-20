@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -156,6 +157,22 @@ public class TaskController {
 		}
 
 		taskRepository.save(originalTask);
+
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@DeleteMapping("/tasks/{id}")
+	public ResponseEntity<Task> updateTask(@PathVariable("id") Long id) {
+
+		if (id == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		if (!taskRepository.existsById(id)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		taskRepository.deleteById(id);
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
