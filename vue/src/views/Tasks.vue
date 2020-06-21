@@ -1,5 +1,6 @@
 <template>
   <div class="about container">
+    <div class="pb-3"></div>
     <TaskForm class="pb-3" />
     <TaskFilter />
     <TaskList v-if="tasks" :done="false" class="pb-1"/>
