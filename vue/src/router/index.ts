@@ -6,7 +6,11 @@ Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/",
+    path: '/',
+    redirect: '/app.html'
+  },
+  {
+    path: "/app.html", // TODO: get this from a config
     name: "Tasks",
     component: Tasks
   },
