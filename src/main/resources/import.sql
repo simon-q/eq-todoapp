@@ -35,4 +35,4 @@ WHERE text = 'boring task';
 
 UPDATE task SET
   person_id = (SELECT id FROM person WHERE name = 'Bob')
-WHERE text = 'testing task';
+WHERE text LIKE '%testing task%';
